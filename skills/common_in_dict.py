@@ -23,4 +23,7 @@ s1.keys() & s2.keys() & s3.keys()
 
 # 使用map reduce
 s_keys = map(dict.keys, [s1, s2, s3])
+# list(s_keys)
+
+from functools import reduce
 reduce(lambda a, b: a & b, s_keys)
