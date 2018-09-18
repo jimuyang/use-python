@@ -35,9 +35,11 @@ class FloatRange:
             t -= self.step
 
 def main():
-    fr = FloatRange(1, 4, 0.5)
+    fr = FloatRange(1, 1.1, 0.05)
+    print('----')
     for x in fr: 
         print(x)
+    print('----')
 
     for x in reversed(fr):
         print(x)
