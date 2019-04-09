@@ -6,13 +6,16 @@ from string import Template
 import json
 
 url = "http://fanyi.youdao.com/translate_o"
-querystring = {"smartresult":["dict","rule"]}
+querystring = {"smartresult": ["dict", "rule"]}
+
 
 def generatePayload(source):
     ts = str(int(time.time() * 1000))
     salt = ts + str(random.randint(1, 10))
-    sign = hashlib.md5(('fanyideskweb' + source + salt + '1L5ja}w$puC.v_Kz3@yYn').encode('utf-8')).hexdigest()
+    sign = hashlib.md5(('fanyideskweb' + source + salt +
+                        '1L5ja}w$puC.v_Kz3@yYn').encode('utf-8')).hexdigest()
     return {"ts": ts, "salt": salt, "sign": sign, "src": source}
+
 
 # payload = "i=hi&from=AUTO&to=AUTO&smartresult=dict&client=fanyideskweb&salt=15534143179236&sign=55acfecd86f0cdccda828250bd50bc6a&ts=1553414317923&doctype=json&version=2.1&keyfrom=fanyi.web&action=FY_BY_REALTlME&typoResult=false"
 payload_template = Template("i=${src}&salt=${salt}&sign=${sign}&ts=${ts}\
@@ -29,7 +32,8 @@ src = input('input:')
 payload = payload_template.substitute(**(generatePayload(src)))
 # print(payload)
 
-response = requests.request("POST", url, data=payload.encode('utf-8'), headers=headers, params=querystring)
+response = requests.request("POST", url, data=payload.encode(
+    'utf-8'), headers=headers, params=querystring)
 data = json.loads(response.text)
 print(data)
 
@@ -37,5 +41,6 @@ result = []
 result.append(data['translateResult'][0][0]['tgt'])
 if ('smartResult' in data):
     for o in data['smartResult']['entries']:
-        result.append(o)
+        if o.strip() != '':
+            result.append(o.replace('\r\n', ''))
 print(result)
